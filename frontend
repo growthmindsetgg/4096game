@@ -4,8 +4,7 @@ import { ethers } from "ethers";
 const contractABI = [
     // ABI JSON here
 ];
-const contractAddress = "YOUR_CONTRACT_ADDRESS";
-
+const contractAddress =  ""; // deployed contract address to be added here
 function App() {
     const [score, setScore] = useState(0);
     const [highScore, setHighScore] = useState(null);
