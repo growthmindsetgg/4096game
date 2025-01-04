@@ -1,0 +1,65 @@
+import React, { useState } from "react";
+import { ethers } from "ethers";
+
+const contractABI = [
+    // ABI JSON here
+];
+const contractAddress = "YOUR_CONTRACT_ADDRESS";
+
+function App() {
+    const [score, setScore] = useState(0);
+    const [highScore, setHighScore] = useState(null);
+    const [playerAddress, setPlayerAddress] = useState("");
+
+    async function submitScore() {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+            const tx = await contract.submitScore(score);
+            await tx.wait();
+            alert("Score submitted!");
+        } catch (error) {
+            console.error("Error submitting score:", error);
+        }
+    }
+
+    async function fetchHighScore() {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const contract = new ethers.Contract(contractAddress, contractABI, provider);
+            const score = await contract.getHighScore(playerAddress);
+            setHighScore(score.toString());
+        } catch (error) {
+            console.error("Error fetching high score:", error);
+        }
+    }
+
+    return (
+        <div>
+            <h1>4096 Game</h1>
+            <div>
+                <label>Score: </label>
+                <input
+                    type="number"
+                    value={score}
+                    onChange={(e) => setScore(Number(e.target.value))}
+                />
+                <button onClick={submitScore}>Submit Score</button>
+            </div>
+            <div>
+                <label>Player Address: </label>
+                <input
+                    type="text"
+                    value={playerAddress}
+                    onChange={(e) => setPlayerAddress(e.target.value)}
+                />
+                <button onClick={fetchHighScore}>Get High Score</button>
+            </div>
+            {highScore !== null && <p>High Score: {highScore}</p>}
+        </div>
+    );
+}
+
+export default App;
