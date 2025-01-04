@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Game4096 {
+    struct Player {
+        uint256 highScore;
+        uint256 gamesPlayed;
+    }
+
+    mapping(address => Player) public players;
+
+    event NewHighScore(address indexed player, uint256 score);
+
+    function submitScore(uint256 score) public {
+        Player storage player = players[msg.sender];
+        player.gamesPlayed += 1;
+
+        if (score > player.highScore) {
+            player.highScore = score;
+            emit NewHighScore(msg.sender, score);
+        }
+    }
+
+    function getHighScore(address player) public view returns (uint256) {
+        return players[player].highScore;
+    }
+
+    function getGamesPlayed(address player) public view returns (uint256) {
+        return players[player].gamesPlayed;
+    }
+}
