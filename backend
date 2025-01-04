@@ -1,0 +1,34 @@
+const { ethers } = require("ethers");
+require("dotenv").config();
+
+// Contract ABI and address
+const contractABI = [
+    // ABI JSON here
+];
+const contractAddress = "YOUR_CONTRACT_ADDRESS";
+
+// Connect to the blockchain
+const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const contract = new ethers.Contract(contractAddress, contractABI, wallet);
+
+async function submitScore(score) {
+    try {
+        const tx = await contract.submitScore(score);
+        await tx.wait();
+        console.log(`Score submitted: ${score}`);
+    } catch (error) {
+        console.error("Error submitting score:", error);
+    }
+}
+
+async function getHighScore(playerAddress) {
+    try {
+        const score = await contract.getHighScore(playerAddress);
+        console.log(`High score for ${playerAddress}: ${score}`);
+    } catch (error) {
+        console.error("Error fetching high score:", error);
+    }
+}
+
+module.exports = { submitScore, getHighScore };
